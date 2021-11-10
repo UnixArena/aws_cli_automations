@@ -1,5 +1,5 @@
 #!/bin/bash
-cat /dev/null > Tagupdate.log
+cat /dev/null > Tagupdate_`date +%Y-%m-%d_%H-%M-%S`.log
 while IFS=, read -r BUCKETNAME KEY OLDTAG NEWTAG; do
             aws s3api get-bucket-tagging --bucket $BUCKETNAME > xyz.json 
             if [[ $? -ne 0 ]]; then
