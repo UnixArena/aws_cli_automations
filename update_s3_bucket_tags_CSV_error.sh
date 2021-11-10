@@ -1,9 +1,9 @@
 #!/bin/bash
-cat /dev/null > Tagupdate_`date +%Y-%m-%d_%H-%M-%S`.log
+LOGFILE=Tagupdate_`date +%Y-%m-%d_%H-%M-%S`.log
 while IFS=, read -r BUCKETNAME KEY OLDTAG NEWTAG; do
             aws s3api get-bucket-tagging --bucket $BUCKETNAME > xyz.json 
             if [[ $? -ne 0 ]]; then
-                    echo "unable to fetch the tags for $BUCKETNAME" >> Tagupdate.log;
+                    echo "unable to fetch the tags for $BUCKETNAME" >> $LOGFILE;
             else 
                 #Reverse the file content for Key value update
                 tac xyz.json  > reverse_xyz.json
@@ -12,7 +12,7 @@ while IFS=, read -r BUCKETNAME KEY OLDTAG NEWTAG; do
                 tac reverse_xyz.json > xyz.json
                 aws s3api put-bucket-tagging --bucket $BUCKETNAME --tagging file://xyz.json
                 if [[ $? -ne 0 ]]; then
-                        echo "unable to update the tags for $BUCKETNAME" >> Tagupdate.log;
+                        echo "unable to update the tags for $BUCKETNAME" >> $LOGFILE;
            else 
                 echo "List of tags for $BUCKETNAME after update"
                aws s3api get-bucket-tagging --bucket $BUCKETNAME
