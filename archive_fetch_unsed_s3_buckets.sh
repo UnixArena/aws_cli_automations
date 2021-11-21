@@ -9,7 +9,7 @@ DEST_BUCKET=test2ualin
 SINCE=`date --date '-9 weeks +2 days' +%F 2>/dev/null || date -v '-9w' -v '+2d' +%F`
 
 #Fetch S3 bucket using aws cli and store it in s3_buck.list
-aws s3api list-buckets --query 'Buckets[].[Name]' --output text > s3_buck.list
+aws s3api list-buckets --query 'Buckets[].[Name]' --output text |grep -v $DEST_BUCKET > s3_buck.list
 
 while read -r line; do
         COUNT=$(aws s3api list-objects-v2 --bucket "$line" --query 'Contents[?LastModified > `'"$SINCE"'`].Key'| wc -l)
