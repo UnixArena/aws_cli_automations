@@ -20,7 +20,7 @@ while read -r line; do
  aws s3api list-objects-v2 --bucket $line > /dev/null || read_api_exit=$?
     if [[ ${read_api_exit} -eq 0 ]]; then
         LASTM=`aws s3 ls "$line" --recursive | sort -r |awk ' { print $1 } '  | head -1`
-        if [ "$LASTM" < "$SINCE" ]; then
+        if [[ -n "$LASTM" ]] && [[ "$LASTM" < "$SINCE" ]]; then
                 aws s3 cp s3://$line/ s3://$DEST_BUCKET/${line}_$date/ --recursive --sse AES256
                 echo $line >> s3bucketlist_updated_$date.txt
               else
